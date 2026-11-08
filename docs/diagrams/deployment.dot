@@ -1,0 +1,44 @@
+digraph deployment {
+$defaults
+
+developer [label="developer", $external];
+repository [label="GitHub repository\nshowarcase/otlp-tail-sampler", $external];
+
+subgraph cluster_ci {
+    graph [$cluster];
+    label="ci.yml";
+    install [label="apt install graphviz, fonts\npip install -c requirements.lock\n-e .[dev]", $support];
+    lint [label="make lint\nruff check, ruff format", $support];
+    test [label="make test\npytest", $support];
+    results_check [label="render_results.py --check", $support];
+    build [label="docker build", $component];
+}
+
+dockerfile [label="Dockerfile\nrequirements.lock, pyproject.toml,\nLICENSE, src, configs/gateway.toml,\nresults/thresholds.json", $artifact];
+image [label="image\notlp-tail-sampler", $component];
+
+subgraph cluster_runtime {
+    graph [$cluster];
+    label="container";
+    serve [label="tailsampler serve\nuvicorn, Starlette\nport 4318", $component];
+    volume [label="volume /var/lib/tailsampler\nspans.sqlite3", $datastore];
+}
+
+exporter [label="OTLP/HTTP JSON exporters", $external];
+scraper [label="metrics scraper", $external];
+operator [label="trace and estimate queries", $external];
+
+developer -> repository [label="git push"];
+repository -> install [label="checkout"];
+install -> lint;
+lint -> test;
+test -> results_check;
+results_check -> build;
+build -> image [label="docker build\n-t otlp-tail-sampler"];
+dockerfile -> build;
+image -> serve [label="docker run"];
+exporter -> serve [label="POST /v1/traces"];
+scraper -> serve [label="GET /metrics"];
+operator -> serve [label="GET /v1/traces,\n/v1/estimates"];
+serve -> volume [label="kept spans"];
+}

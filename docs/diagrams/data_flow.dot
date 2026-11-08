@@ -1,0 +1,47 @@
+digraph data_flow {
+$defaults
+
+simulation_toml [label="configs/simulation.toml\nservices, incidents, seeds,\nevaluation sweeps", $artifact];
+gateway_toml [label="configs/gateway.toml\nbaseline rate, decision wait,\nlatency quantile", $artifact];
+
+generate [label="make data\ntailsampler generate\nfleet.py, traffic.py", $component];
+
+calibration [label="data/generated\ncalibration.requests\ncalibration.truth.jsonl", $artifact];
+evaluation_files [label="data/generated\nevaluation.requests\nevaluation.truth.jsonl\nmanifest.json", $artifact];
+
+train [label="make train\ntailsampler train\nfit_latency_thresholds", $component];
+thresholds [label="results/thresholds.json", $artifact];
+
+evaluate [label="make evaluate\ntailsampler evaluate\nevaluation.py, scoring.py,\nbenchmark.py", $component];
+results [label="results/metrics.json\nresults/benchmarks.csv\nresults/environment.json", $artifact];
+
+render_results [label="scripts/render_results.py", $component];
+render_figures [label="make diagrams\nscripts/render_figures.py", $component];
+markdown [label="README.md, docs/*.md\nresult blocks", $artifact];
+images [label="docs/images/*.png", $artifact];
+
+replay [label="tailsampler replay", $support];
+serve [label="make serve\ntailsampler serve", $support];
+sqlite [label="spans.sqlite3", $datastore];
+
+simulation_toml -> generate;
+generate -> calibration [label="clean traffic"];
+generate -> evaluation_files [label="traffic with incidents,\nground truth labels"];
+calibration -> train [label="root spans"];
+gateway_toml -> train [label="quantile"];
+train -> thresholds [label="p99 per route"];
+thresholds -> evaluate;
+evaluation_files -> evaluate [label="requests, truth"];
+simulation_toml -> evaluate [label="sweep settings"];
+gateway_toml -> evaluate [label="sampler settings"];
+evaluate -> results [label="counts, timings,\nhardware"];
+results -> render_results [label="tables"];
+render_results -> markdown;
+results -> render_figures [label="chart data"];
+render_figures -> images;
+
+evaluation_files -> replay [label="request lines"];
+replay -> serve [label="POST /v1/traces"];
+thresholds -> serve;
+serve -> sqlite [label="kept spans"];
+}

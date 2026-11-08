@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.lock
+      - name: Install system packages
+        run: sudo apt-get update && sudo apt-get install -y graphviz fonts-texgyre fonts-dejavu-core
+      - name: Install Python packages
+        run: python -m pip install -c requirements.lock -e ".[dev]"
+      - name: Lint
+        run: make lint
+      - name: Test
+        run: make test
+      - name: Check rendered results
+        run: python scripts/render_results.py --check
+      - name: Build image
+        run: docker build -t otlp-tail-sampler .

@@ -1,0 +1,20 @@
+{
+  "min_samples": 200,
+  "quantile": 0.99,
+  "samples": {
+    "frontend GET /": 8137,
+    "frontend GET /product": 5438,
+    "frontend GET /search": 6857,
+    "frontend POST /cart": 2676,
+    "frontend POST /checkout": 2656,
+    "frontend POST /login": 1309
+  },
+  "thresholds_nano": {
+    "frontend GET /": 34493657,
+    "frontend GET /product": 39020856,
+    "frontend GET /search": 43309850,
+    "frontend POST /cart": 45518957,
+    "frontend POST /checkout": 193959925,
+    "frontend POST /login": 11064870
+  }
+}

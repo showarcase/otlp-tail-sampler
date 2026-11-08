@@ -1,0 +1,711 @@
+{
+  "dataset": {
+    "calibration": {
+      "seed": 11,
+      "duration_seconds": 450,
+      "traces": 27073,
+      "spans": 121384,
+      "requests": 9716,
+      "request_bytes": 33682144,
+      "error_traces": 122,
+      "rare_path_traces": 26,
+      "incident_traces": {}
+    },
+    "evaluation": {
+      "seed": 7,
+      "duration_seconds": 900,
+      "traces": 53961,
+      "spans": 241206,
+      "requests": 19443,
+      "request_bytes": 66965799,
+      "error_traces": 338,
+      "rare_path_traces": 63,
+      "incident_traces": {
+        "inventory-error-burst": 129,
+        "payments-latency-regression": 421,
+        "search-subtle-shift": 4456
+      }
+    }
+  },
+  "categories": {
+    "error": 338,
+    "slow": 543,
+    "rare_path": 63,
+    "inventory-error-burst": 129,
+    "payments-latency-regression": 421,
+    "search-subtle-shift": 4456,
+    "typical": 48338
+  },
+  "policy": {
+    "baseline_rate": 0.05,
+    "decision_wait_seconds": 10.0,
+    "latency_quantile": 0.99,
+    "slow_quantile": 0.99,
+    "routes_with_threshold": 6,
+    "head_rate": 0.09316517831231395
+  },
+  "samplers": {
+    "tail": {
+      "spans_received": 241206,
+      "spans_kept": 22472,
+      "span_fraction": 0.09316517831231395,
+      "traces_kept": 4626,
+      "trace_fraction": 0.08572858175348863,
+      "complete_trace_fraction": 1.0,
+      "peak_buffered_traces": 690,
+      "peak_buffered_spans": 3054,
+      "late_spans_kept": 0,
+      "late_spans_dropped": 0,
+      "forced_decisions": 0,
+      "kept_by_reason": {
+        "baseline": 2638,
+        "error": 338,
+        "latency": 1650
+      },
+      "recall": {
+        "error": 1.0,
+        "slow": 0.996316758747698,
+        "rare_path": 0.42857142857142855,
+        "inventory-error-burst": 1.0,
+        "payments-latency-regression": 1.0,
+        "search-subtle-shift": 0.1943447037701975,
+        "typical": 0.05442922752285986
+      }
+    },
+    "head": {
+      "spans_received": 241206,
+      "spans_kept": 22394,
+      "span_fraction": 0.09284180327189208,
+      "traces_kept": 4972,
+      "trace_fraction": 0.09214062007746335,
+      "complete_trace_fraction": 1.0,
+      "peak_buffered_traces": 0,
+      "peak_buffered_spans": 0,
+      "late_spans_kept": 0,
+      "late_spans_dropped": 0,
+      "forced_decisions": 0,
+      "kept_by_reason": {
+        "head": 4972
+      },
+      "recall": {
+        "error": 0.08284023668639054,
+        "slow": 0.08839779005524862,
+        "rare_path": 0.12698412698412698,
+        "inventory-error-burst": 0.11627906976744186,
+        "payments-latency-regression": 0.09738717339667459,
+        "search-subtle-shift": 0.09358168761220825,
+        "typical": 0.0920807646158302
+      }
+    },
+    "keep_all": {
+      "spans_received": 241206,
+      "spans_kept": 241206,
+      "span_fraction": 1.0,
+      "traces_kept": 53961,
+      "trace_fraction": 1.0,
+      "complete_trace_fraction": 1.0,
+      "peak_buffered_traces": 0,
+      "peak_buffered_spans": 0,
+      "late_spans_kept": 0,
+      "late_spans_dropped": 0,
+      "forced_decisions": 0,
+      "kept_by_reason": {
+        "keep_all": 53961
+      },
+      "recall": {
+        "error": 1.0,
+        "slow": 1.0,
+        "rare_path": 1.0,
+        "inventory-error-burst": 1.0,
+        "payments-latency-regression": 1.0,
+        "search-subtle-shift": 1.0,
+        "typical": 1.0
+      }
+    }
+  },
+  "estimates": {
+    "tail": {
+      "median_abs_request_error_percent": 2.688471830159377,
+      "max_abs_request_error_percent": 15.005727376861397,
+      "max_abs_failed_error_percent": 0.0,
+      "true_failed_requests": 338,
+      "estimated_failed_requests": 338.0,
+      "routes": [
+        {
+          "service": "frontend",
+          "name": "GET /",
+          "true_requests": 16534,
+          "estimated_requests": 16944.0,
+          "request_error_percent": 2.4797387202128944,
+          "true_failed_requests": 41,
+          "estimated_failed_requests": 41.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "GET /product",
+          "true_requests": 10769,
+          "estimated_requests": 10457.0,
+          "request_error_percent": -2.8972049401058597,
+          "true_failed_requests": 32,
+          "estimated_failed_requests": 32.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "GET /search",
+          "true_requests": 13528,
+          "estimated_requests": 13728.0,
+          "request_error_percent": 1.478415138971023,
+          "true_failed_requests": 26,
+          "estimated_failed_requests": 26.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "POST /cart",
+          "true_requests": 5219,
+          "estimated_requests": 4961.0,
+          "request_error_percent": -4.943475761640161,
+          "true_failed_requests": 15,
+          "estimated_failed_requests": 15.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "POST /checkout",
+          "true_requests": 5238,
+          "estimated_requests": 6024.0,
+          "request_error_percent": 15.005727376861397,
+          "true_failed_requests": 220,
+          "estimated_failed_requests": 220.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "POST /login",
+          "true_requests": 2673,
+          "estimated_requests": 2634.0,
+          "request_error_percent": -1.4590347923681257,
+          "true_failed_requests": 4,
+          "estimated_failed_requests": 4.0,
+          "failed_error_percent": 0.0
+        }
+      ]
+    },
+    "head": {
+      "median_abs_request_error_percent": 3.1149931261921675,
+      "max_abs_request_error_percent": 7.451028367950138,
+      "max_abs_failed_error_percent": 100.0,
+      "true_failed_requests": 338,
+      "estimated_failed_requests": 300.5414738341047,
+      "routes": [
+        {
+          "service": "frontend",
+          "name": "GET /",
+          "true_requests": 16534,
+          "estimated_requests": 16529.781060875757,
+          "request_error_percent": -0.025516748060014225,
+          "true_failed_requests": 41,
+          "estimated_failed_requests": 42.93449626201495,
+          "failed_error_percent": 4.718283565890129
+        },
+        {
+          "service": "frontend",
+          "name": "GET /product",
+          "true_requests": 10769,
+          "estimated_requests": 10229.143734425063,
+          "request_error_percent": -5.013058460162851,
+          "true_failed_requests": 32,
+          "estimated_failed_requests": 21.467248131007477,
+          "failed_error_percent": -32.914849590601634
+        },
+        {
+          "service": "frontend",
+          "name": "GET /search",
+          "true_requests": 13528,
+          "estimated_requests": 13556.567194731222,
+          "request_error_percent": 0.2111708658428601,
+          "true_failed_requests": 26,
+          "estimated_failed_requests": 10.733624065503738,
+          "failed_error_percent": -58.71683051729332
+        },
+        {
+          "service": "frontend",
+          "name": "POST /cart",
+          "true_requests": 5219,
+          "estimated_requests": 4830.130829476682,
+          "request_error_percent": -7.451028367950138,
+          "true_failed_requests": 15,
+          "estimated_failed_requests": 0,
+          "failed_error_percent": -100.0
+        },
+        {
+          "service": "frontend",
+          "name": "POST /checkout",
+          "true_requests": 5238,
+          "estimated_requests": 5581.484514061944,
+          "request_error_percent": 6.55755086028911,
+          "true_failed_requests": 220,
+          "estimated_failed_requests": 225.4061053755785,
+          "failed_error_percent": 2.457320625262957
+        },
+        {
+          "service": "frontend",
+          "name": "POST /login",
+          "true_requests": 2673,
+          "estimated_requests": 2640.4715201139197,
+          "request_error_percent": -1.2169277922214843,
+          "true_failed_requests": 4,
+          "estimated_failed_requests": 0,
+          "failed_error_percent": -100.0
+        }
+      ]
+    },
+    "keep_all": {
+      "median_abs_request_error_percent": 0.0,
+      "max_abs_request_error_percent": 0.0,
+      "max_abs_failed_error_percent": 0.0,
+      "true_failed_requests": 338,
+      "estimated_failed_requests": 338.0,
+      "routes": [
+        {
+          "service": "frontend",
+          "name": "GET /",
+          "true_requests": 16534,
+          "estimated_requests": 16534.0,
+          "request_error_percent": 0.0,
+          "true_failed_requests": 41,
+          "estimated_failed_requests": 41.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "GET /product",
+          "true_requests": 10769,
+          "estimated_requests": 10769.0,
+          "request_error_percent": 0.0,
+          "true_failed_requests": 32,
+          "estimated_failed_requests": 32.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "GET /search",
+          "true_requests": 13528,
+          "estimated_requests": 13528.0,
+          "request_error_percent": 0.0,
+          "true_failed_requests": 26,
+          "estimated_failed_requests": 26.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "POST /cart",
+          "true_requests": 5219,
+          "estimated_requests": 5219.0,
+          "request_error_percent": 0.0,
+          "true_failed_requests": 15,
+          "estimated_failed_requests": 15.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "POST /checkout",
+          "true_requests": 5238,
+          "estimated_requests": 5238.0,
+          "request_error_percent": 0.0,
+          "true_failed_requests": 220,
+          "estimated_failed_requests": 220.0,
+          "failed_error_percent": 0.0
+        },
+        {
+          "service": "frontend",
+          "name": "POST /login",
+          "true_requests": 2673,
+          "estimated_requests": 2673.0,
+          "request_error_percent": 0.0,
+          "true_failed_requests": 4,
+          "estimated_failed_requests": 4.0,
+          "failed_error_percent": 0.0
+        }
+      ]
+    }
+  },
+  "sweeps": {
+    "decision_wait": [
+      {
+        "decision_wait_seconds": 1.0,
+        "tail": {
+          "spans_received": 241206,
+          "spans_kept": 22360,
+          "span_fraction": 0.09270084492093895,
+          "traces_kept": 4613,
+          "trace_fraction": 0.08548766701877282,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 100,
+          "peak_buffered_spans": 408,
+          "late_spans_kept": 414,
+          "late_spans_dropped": 2117,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "baseline": 2638,
+            "error": 332,
+            "latency": 1643
+          },
+          "recall": {
+            "error": 0.9822485207100592,
+            "slow": 0.9834254143646409,
+            "rare_path": 0.4126984126984127,
+            "inventory-error-burst": 1.0,
+            "payments-latency-regression": 0.9833729216152018,
+            "search-subtle-shift": 0.1943447037701975,
+            "typical": 0.05442922752285986
+          }
+        }
+      },
+      {
+        "decision_wait_seconds": 2.0,
+        "tail": {
+          "spans_received": 241206,
+          "spans_kept": 22436,
+          "span_fraction": 0.09301592829365771,
+          "traces_kept": 4622,
+          "trace_fraction": 0.08565445414280684,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 175,
+          "peak_buffered_spans": 738,
+          "late_spans_kept": 309,
+          "late_spans_dropped": 1607,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "baseline": 2638,
+            "error": 334,
+            "latency": 1650
+          },
+          "recall": {
+            "error": 0.9881656804733728,
+            "slow": 0.996316758747698,
+            "rare_path": 0.42857142857142855,
+            "inventory-error-burst": 1.0,
+            "payments-latency-regression": 1.0,
+            "search-subtle-shift": 0.1943447037701975,
+            "typical": 0.05442922752285986
+          }
+        }
+      },
+      {
+        "decision_wait_seconds": 5.0,
+        "tail": {
+          "spans_received": 241206,
+          "spans_kept": 22472,
+          "span_fraction": 0.09316517831231395,
+          "traces_kept": 4626,
+          "trace_fraction": 0.08572858175348863,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 364,
+          "peak_buffered_spans": 1603,
+          "late_spans_kept": 16,
+          "late_spans_dropped": 27,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "baseline": 2638,
+            "error": 338,
+            "latency": 1650
+          },
+          "recall": {
+            "error": 1.0,
+            "slow": 0.996316758747698,
+            "rare_path": 0.42857142857142855,
+            "inventory-error-burst": 1.0,
+            "payments-latency-regression": 1.0,
+            "search-subtle-shift": 0.1943447037701975,
+            "typical": 0.05442922752285986
+          }
+        }
+      },
+      {
+        "decision_wait_seconds": 10.0,
+        "tail": {
+          "spans_received": 241206,
+          "spans_kept": 22472,
+          "span_fraction": 0.09316517831231395,
+          "traces_kept": 4626,
+          "trace_fraction": 0.08572858175348863,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 690,
+          "peak_buffered_spans": 3054,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "baseline": 2638,
+            "error": 338,
+            "latency": 1650
+          },
+          "recall": {
+            "error": 1.0,
+            "slow": 0.996316758747698,
+            "rare_path": 0.42857142857142855,
+            "inventory-error-burst": 1.0,
+            "payments-latency-regression": 1.0,
+            "search-subtle-shift": 0.1943447037701975,
+            "typical": 0.05442922752285986
+          }
+        }
+      },
+      {
+        "decision_wait_seconds": 20.0,
+        "tail": {
+          "spans_received": 241206,
+          "spans_kept": 22472,
+          "span_fraction": 0.09316517831231395,
+          "traces_kept": 4626,
+          "trace_fraction": 0.08572858175348863,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 1303,
+          "peak_buffered_spans": 5827,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "baseline": 2638,
+            "error": 338,
+            "latency": 1650
+          },
+          "recall": {
+            "error": 1.0,
+            "slow": 0.996316758747698,
+            "rare_path": 0.42857142857142855,
+            "inventory-error-burst": 1.0,
+            "payments-latency-regression": 1.0,
+            "search-subtle-shift": 0.1943447037701975,
+            "typical": 0.05442922752285986
+          }
+        }
+      }
+    ],
+    "baseline_rate": [
+      {
+        "baseline_rate": 0.01,
+        "tail": {
+          "spans_received": 241206,
+          "spans_kept": 12995,
+          "span_fraction": 0.05387511090105553,
+          "traces_kept": 2510,
+          "trace_fraction": 0.04651507570282241,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 690,
+          "peak_buffered_spans": 3054,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "baseline": 522,
+            "error": 338,
+            "latency": 1650
+          },
+          "recall": {
+            "error": 1.0,
+            "slow": 0.996316758747698,
+            "rare_path": 0.3968253968253968,
+            "inventory-error-burst": 1.0,
+            "payments-latency-regression": 1.0,
+            "search-subtle-shift": 0.1586624775583483,
+            "typical": 0.013984856634531839
+          }
+        },
+        "head": {
+          "spans_received": 241206,
+          "spans_kept": 13258,
+          "span_fraction": 0.05496546520401648,
+          "traces_kept": 2932,
+          "trace_fraction": 0.054335538629751115,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 0,
+          "peak_buffered_spans": 0,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "head": 2932
+          },
+          "recall": {
+            "error": 0.04437869822485207,
+            "slow": 0.05156537753222836,
+            "rare_path": 0.047619047619047616,
+            "inventory-error-burst": 0.07751937984496124,
+            "payments-latency-regression": 0.047505938242280284,
+            "search-subtle-shift": 0.05565529622980251,
+            "typical": 0.054387852207373084
+          }
+        }
+      },
+      {
+        "baseline_rate": 0.02,
+        "tail": {
+          "spans_received": 241206,
+          "spans_kept": 15265,
+          "span_fraction": 0.06328615374410256,
+          "traces_kept": 3017,
+          "trace_fraction": 0.055910750356739126,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 690,
+          "peak_buffered_spans": 3054,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "baseline": 1029,
+            "error": 338,
+            "latency": 1650
+          },
+          "recall": {
+            "error": 1.0,
+            "slow": 0.996316758747698,
+            "rare_path": 0.3968253968253968,
+            "inventory-error-burst": 1.0,
+            "payments-latency-regression": 1.0,
+            "search-subtle-shift": 0.1676391382405745,
+            "typical": 0.023645992800695105
+          }
+        },
+        "head": {
+          "spans_received": 241206,
+          "spans_kept": 15349,
+          "span_fraction": 0.06363440378763381,
+          "traces_kept": 3395,
+          "trace_fraction": 0.06291580956616816,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 0,
+          "peak_buffered_spans": 0,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "head": 3395
+          },
+          "recall": {
+            "error": 0.05917159763313609,
+            "slow": 0.058931860036832415,
+            "rare_path": 0.09523809523809523,
+            "inventory-error-burst": 0.07751937984496124,
+            "payments-latency-regression": 0.05938242280285035,
+            "search-subtle-shift": 0.06418312387791741,
+            "typical": 0.06293185485539327
+          }
+        }
+      },
+      {
+        "baseline_rate": 0.05,
+        "tail": {
+          "spans_received": 241206,
+          "spans_kept": 22472,
+          "span_fraction": 0.09316517831231395,
+          "traces_kept": 4626,
+          "trace_fraction": 0.08572858175348863,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 690,
+          "peak_buffered_spans": 3054,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "baseline": 2638,
+            "error": 338,
+            "latency": 1650
+          },
+          "recall": {
+            "error": 1.0,
+            "slow": 0.996316758747698,
+            "rare_path": 0.42857142857142855,
+            "inventory-error-burst": 1.0,
+            "payments-latency-regression": 1.0,
+            "search-subtle-shift": 0.1943447037701975,
+            "typical": 0.05442922752285986
+          }
+        },
+        "head": {
+          "spans_received": 241206,
+          "spans_kept": 22394,
+          "span_fraction": 0.09284180327189208,
+          "traces_kept": 4972,
+          "trace_fraction": 0.09214062007746335,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 0,
+          "peak_buffered_spans": 0,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "head": 4972
+          },
+          "recall": {
+            "error": 0.08284023668639054,
+            "slow": 0.08839779005524862,
+            "rare_path": 0.12698412698412698,
+            "inventory-error-burst": 0.11627906976744186,
+            "payments-latency-regression": 0.09738717339667459,
+            "search-subtle-shift": 0.09358168761220825,
+            "typical": 0.0920807646158302
+          }
+        }
+      },
+      {
+        "baseline_rate": 0.1,
+        "tail": {
+          "spans_received": 241206,
+          "spans_kept": 33666,
+          "span_fraction": 0.1395736424467053,
+          "traces_kept": 7131,
+          "trace_fraction": 0.13215099794295881,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 690,
+          "peak_buffered_spans": 3054,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "baseline": 5143,
+            "error": 338,
+            "latency": 1650
+          },
+          "recall": {
+            "error": 1.0,
+            "slow": 0.996316758747698,
+            "rare_path": 0.47619047619047616,
+            "inventory-error-burst": 1.0,
+            "payments-latency-regression": 1.0,
+            "search-subtle-shift": 0.23361759425493717,
+            "typical": 0.10256940709172907
+          }
+        },
+        "head": {
+          "spans_received": 241206,
+          "spans_kept": 33361,
+          "span_fraction": 0.13830916312197872,
+          "traces_kept": 7421,
+          "trace_fraction": 0.1375252497173885,
+          "complete_trace_fraction": 1.0,
+          "peak_buffered_traces": 0,
+          "peak_buffered_spans": 0,
+          "late_spans_kept": 0,
+          "late_spans_dropped": 0,
+          "forced_decisions": 0,
+          "kept_by_reason": {
+            "head": 7421
+          },
+          "recall": {
+            "error": 0.13313609467455623,
+            "slow": 0.13812154696132597,
+            "rare_path": 0.1746031746031746,
+            "inventory-error-burst": 0.17829457364341086,
+            "payments-latency-regression": 0.14726840855106887,
+            "search-subtle-shift": 0.138016157989228,
+            "typical": 0.13738673507385493
+          }
+        }
+      }
+    ]
+  }
+}

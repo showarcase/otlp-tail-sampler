@@ -1,0 +1,51 @@
+digraph runtime_flow {
+$defaults
+
+arrive [label="span arrives\nTailSampler.ingest(spans, now)", $step];
+advance [label="advance(now): decide every buffered\ntrace whose deadline has passed", $step];
+cached [label="decision cached\nfor this trace id?", $decision];
+cached_keep [label="cached decision\nkeeps the trace?", $decision];
+late_kept [label="late span kept\nKeptTrace(late=True)", $keep];
+late_dropped [label="late span dropped\nlate_spans_dropped", $drop];
+add [label="TraceBuffer.add(span)", $step];
+over [label="more than\nmax_buffered_traces?", $decision];
+forced [label="pop_oldest, decide early\nforced_decisions", $step];
+wait [label="decision_wait_seconds\nelapse since first span", $step];
+decide [label="decide(policy, trace_id, spans)", $step];
+error [label="any span with\nstatus ERROR?", $decision];
+latency [label="root span duration at or\nabove the route threshold?", $decision];
+baseline [label="baseline_selects(\ntrace_id, baseline_rate)?", $decision];
+keep_error [label="keep: error\nweight 1.0", $keep];
+keep_latency [label="keep: latency\nweight 1.0", $keep];
+keep_baseline [label="keep: baseline\nweight 1 / baseline_rate", $keep];
+dropped [label="drop: not_sampled", $drop];
+remember [label="DecisionCache.remember\ndecision kept for later spans", $step];
+publish [label="KeptTrace returned to api.py\nGateway.publish, SpanStore.insert", $keep];
+discarded [label="nothing stored\ntraces_dropped counted", $drop];
+
+arrive -> advance;
+advance -> cached;
+cached -> cached_keep [label="yes"];
+cached_keep -> late_kept [label="yes"];
+cached_keep -> late_dropped [label="no", $failure_edge];
+cached -> add [label="no"];
+add -> over;
+over -> forced [label="yes", $failure_edge];
+over -> wait [label="no"];
+forced -> decide;
+wait -> decide;
+decide -> error;
+error -> keep_error [label="yes"];
+error -> latency [label="no"];
+latency -> keep_latency [label="yes"];
+latency -> baseline [label="no"];
+baseline -> keep_baseline [label="yes"];
+baseline -> dropped [label="no", $failure_edge];
+keep_error -> remember;
+keep_latency -> remember;
+keep_baseline -> remember;
+dropped -> remember [$failure_edge];
+remember -> publish [label="kept"];
+remember -> discarded [label="dropped", $failure_edge];
+late_kept -> publish;
+}

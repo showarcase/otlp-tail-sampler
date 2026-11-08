@@ -1,0 +1,43 @@
+{
+  "name": "plum ink",
+  "mode": "dark",
+  "temperature": "warm",
+  "harmony": "one hue plus a single contrasting accent",
+  "base_hue": 322,
+  "accent_hue": 142,
+  "colors": {
+    "background": "#1a1117",
+    "surface": "#261a21",
+    "border": "#5d4655",
+    "text": "#f2e9ee",
+    "muted": "#bca9b5",
+    "primary": "#df86be",
+    "secondary": "#b6729d",
+    "accent": "#79c394",
+    "error": "#e37463"
+  },
+  "fonts": {
+    "body": "TeX Gyre Pagella",
+    "mono": "DejaVu Sans Mono"
+  },
+  "shapes": {
+    "corner_radius": 4,
+    "border_width": 2.0,
+    "fill": "outlined",
+    "edge_style": "polyline",
+    "arrowhead": "vee",
+    "flow_direction": "TB",
+    "failure_path_style": "dashed"
+  },
+  "charts": {
+    "gridlines": "horizontal",
+    "spines": "bottom only",
+    "marker": "s",
+    "line_width": 2.0,
+    "labels": "direct",
+    "legend": false
+  },
+  "output": {
+    "min_long_side_px": 2400
+  }
+}

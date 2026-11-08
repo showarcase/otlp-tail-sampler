@@ -1,0 +1,286 @@
+[traffic]
+start_unix_nano = 1_767_225_600_000_000_000
+propagate_error_probability = 0.7
+network_delay_ms = [5, 40]
+default_export_interval_ms = 500
+
+[calibration_traffic]
+seed = 11
+duration_seconds = 450
+requests_per_second = 60.0
+incidents = false
+
+[evaluation_traffic]
+seed = 7
+duration_seconds = 900
+requests_per_second = 60.0
+incidents = true
+
+[evaluation]
+slow_quantile = 0.99
+decision_wait_seconds = [1.0, 2.0, 5.0, 10.0, 20.0]
+baseline_rates = [0.01, 0.02, 0.05, 0.1]
+benchmark_repeats = 3
+
+[[exporter]]
+service = "notifications"
+interval_ms = 5000
+
+[[incident]]
+name = "search-subtle-shift"
+kind = "latency"
+operation = "search.index"
+start_second = 100
+end_second = 400
+probability = 1.0
+added_median_ms = 12.0
+added_sigma = 0.2
+
+[[incident]]
+name = "payments-latency-regression"
+kind = "latency"
+operation = "payments.charge"
+start_second = 450
+end_second = 600
+probability = 0.5
+added_median_ms = 300.0
+added_sigma = 0.3
+
+[[incident]]
+name = "inventory-error-burst"
+kind = "errors"
+operation = "inventory.reserve"
+start_second = 700
+end_second = 760
+probability = 0.4
+
+[[operation]]
+name = "frontend.home"
+service = "frontend"
+span_name = "GET /"
+self_median_ms = 3.0
+self_sigma = 0.4
+error_rate = 0.0005
+entrypoint_weight = 0.30
+calls = [
+  { operation = "catalog.list" },
+  { operation = "ranking.score", probability = 0.7 },
+]
+
+[[operation]]
+name = "frontend.search"
+service = "frontend"
+span_name = "GET /search"
+self_median_ms = 3.0
+self_sigma = 0.4
+error_rate = 0.0005
+entrypoint_weight = 0.25
+calls = [{ operation = "search.query" }]
+
+[[operation]]
+name = "frontend.product"
+service = "frontend"
+span_name = "GET /product"
+self_median_ms = 3.0
+self_sigma = 0.4
+error_rate = 0.0005
+entrypoint_weight = 0.20
+calls = [
+  { operation = "catalog.get" },
+  { operation = "inventory.check", probability = 0.8 },
+  { operation = "ranking.score", probability = 0.4 },
+]
+
+[[operation]]
+name = "frontend.cart"
+service = "frontend"
+span_name = "POST /cart"
+self_median_ms = 3.0
+self_sigma = 0.4
+error_rate = 0.0005
+entrypoint_weight = 0.10
+calls = [
+  { operation = "cart.update" },
+  { operation = "inventory.check", probability = 0.5 },
+]
+
+[[operation]]
+name = "frontend.checkout"
+service = "frontend"
+span_name = "POST /checkout"
+self_median_ms = 4.0
+self_sigma = 0.4
+error_rate = 0.0005
+entrypoint_weight = 0.10
+calls = [
+  { operation = "cart.get" },
+  { operation = "inventory.reserve" },
+  { operation = "payments.charge" },
+  { operation = "notifications.send", probability = 0.6, background = true },
+]
+
+[[operation]]
+name = "frontend.login"
+service = "frontend"
+span_name = "POST /login"
+self_median_ms = 3.0
+self_sigma = 0.4
+error_rate = 0.0005
+entrypoint_weight = 0.05
+calls = [{ operation = "auth.verify" }]
+
+[[operation]]
+name = "catalog.list"
+service = "catalog"
+span_name = "ListProducts"
+self_median_ms = 2.0
+self_sigma = 0.4
+error_rate = 0.0005
+calls = [{ operation = "database.query" }]
+
+[[operation]]
+name = "catalog.get"
+service = "catalog"
+span_name = "GetProduct"
+self_median_ms = 1.5
+self_sigma = 0.4
+error_rate = 0.0005
+calls = [
+  { operation = "cache.lookup" },
+  { operation = "database.query", probability = 0.2 },
+]
+
+[[operation]]
+name = "search.query"
+service = "search"
+span_name = "Query"
+self_median_ms = 4.0
+self_sigma = 0.45
+error_rate = 0.0005
+calls = [
+  { operation = "search.index" },
+  { operation = "ranking.score", probability = 0.9 },
+]
+
+[[operation]]
+name = "search.index"
+service = "search"
+span_name = "IndexLookup"
+self_median_ms = 8.0
+self_sigma = 0.5
+error_rate = 0.0005
+
+[[operation]]
+name = "ranking.score"
+service = "ranking"
+span_name = "Score"
+self_median_ms = 6.0
+self_sigma = 0.5
+error_rate = 0.0005
+
+[[operation]]
+name = "inventory.check"
+service = "inventory"
+span_name = "CheckStock"
+self_median_ms = 1.5
+self_sigma = 0.4
+error_rate = 0.0005
+calls = [{ operation = "database.query" }]
+
+[[operation]]
+name = "inventory.reserve"
+service = "inventory"
+span_name = "ReserveStock"
+self_median_ms = 3.0
+self_sigma = 0.4
+error_rate = 0.001
+calls = [{ operation = "database.write" }]
+
+[[operation]]
+name = "cart.get"
+service = "cart"
+span_name = "GetCart"
+self_median_ms = 1.0
+self_sigma = 0.4
+error_rate = 0.0005
+calls = [{ operation = "cache.lookup" }]
+
+[[operation]]
+name = "cart.update"
+service = "cart"
+span_name = "UpdateCart"
+self_median_ms = 2.0
+self_sigma = 0.4
+error_rate = 0.0005
+calls = [{ operation = "database.write" }]
+
+[[operation]]
+name = "payments.charge"
+service = "payments"
+span_name = "Charge"
+self_median_ms = 4.0
+self_sigma = 0.4
+error_rate = 0.001
+calls = [
+  { operation = "fraud.review", probability = 0.01 },
+  { operation = "psp.authorize" },
+]
+
+[[operation]]
+name = "psp.authorize"
+service = "psp"
+span_name = "Authorize"
+self_median_ms = 55.0
+self_sigma = 0.45
+error_rate = 0.01
+
+[[operation]]
+name = "fraud.review"
+service = "fraud"
+span_name = "Review"
+self_median_ms = 70.0
+self_sigma = 0.4
+error_rate = 0.0005
+rare = true
+
+[[operation]]
+name = "notifications.send"
+service = "notifications"
+span_name = "SendReceipt"
+self_median_ms = 5.0
+self_sigma = 0.5
+error_rate = 0.003
+calls = [{ operation = "database.write" }]
+
+[[operation]]
+name = "auth.verify"
+service = "auth"
+span_name = "VerifyCredentials"
+self_median_ms = 1.5
+self_sigma = 0.4
+error_rate = 0.0005
+calls = [{ operation = "cache.lookup" }]
+
+[[operation]]
+name = "database.query"
+service = "database"
+span_name = "SELECT"
+self_median_ms = 5.0
+self_sigma = 0.6
+error_rate = 0.0015
+
+[[operation]]
+name = "database.write"
+service = "database"
+span_name = "INSERT"
+self_median_ms = 8.0
+self_sigma = 0.6
+error_rate = 0.002
+
+[[operation]]
+name = "cache.lookup"
+service = "cache"
+span_name = "GET"
+self_median_ms = 0.6
+self_sigma = 0.4
+error_rate = 0.0005

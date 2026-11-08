@@ -1,0 +1,31 @@
+digraph schema {
+$defaults
+
+spans [shape=plain, label=<
+<table border="0" cellborder="1" cellspacing="0" cellpadding="7" color="$border">
+<tr><td colspan="3" bgcolor="$surface"><font face="$font_body" point-size="22" color="$primary">spans</font><font face="$font_body" point-size="15" color="$muted">   WITHOUT ROWID</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">trace_id</font></td><td align="left"><font face="$font_mono" color="$muted">TEXT</font></td><td align="left"><font face="$font_body" color="$accent">primary key, part 1</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">span_id</font></td><td align="left"><font face="$font_mono" color="$muted">TEXT</font></td><td align="left"><font face="$font_body" color="$accent">primary key, part 2</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">parent_span_id</font></td><td align="left"><font face="$font_mono" color="$muted">TEXT</font></td><td align="left"><font face="$font_body" color="$muted">empty for a root span</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">service</font></td><td align="left"><font face="$font_mono" color="$muted">TEXT</font></td><td align="left"><font face="$font_body" color="$accent">index spans_by_service_start</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">name</font></td><td align="left"><font face="$font_mono" color="$muted">TEXT</font></td><td align="left"><font face="$font_body" color="$muted">operation name</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">kind</font></td><td align="left"><font face="$font_mono" color="$muted">INTEGER</font></td><td align="left"><font face="$font_body" color="$muted">OTLP span kind</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">start_unix_nano</font></td><td align="left"><font face="$font_mono" color="$muted">INTEGER</font></td><td align="left"><font face="$font_body" color="$accent">index spans_by_service_start</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">end_unix_nano</font></td><td align="left"><font face="$font_mono" color="$muted">INTEGER</font></td><td align="left"><font face="$font_body" color="$muted">duration is end minus start</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">status_code</font></td><td align="left"><font face="$font_mono" color="$muted">INTEGER</font></td><td align="left"><font face="$font_body" color="$error">2 marks a failed span</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">status_message</font></td><td align="left"><font face="$font_mono" color="$muted">TEXT</font></td><td align="left"><font face="$font_body" color="$muted">failure text</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">attributes</font></td><td align="left"><font face="$font_mono" color="$muted">TEXT</font></td><td align="left"><font face="$font_body" color="$muted">JSON object</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">weight</font></td><td align="left"><font face="$font_mono" color="$muted">REAL</font></td><td align="left"><font face="$font_body" color="$primary">requests this trace stands for</font></td></tr>
+<tr><td align="left"><font face="$font_mono" color="$text">reason</font></td><td align="left"><font face="$font_mono" color="$muted">TEXT</font></td><td align="left"><font face="$font_body" color="$primary">rule that kept the trace</font></td></tr>
+</table>>];
+
+insert [label="SpanStore.insert\nINSERT OR IGNORE,\nrepeat inserts change nothing", $component];
+trace_spans [label="SpanStore.trace_spans\nall spans of one trace_id", $component];
+search [label="SpanStore.search\nroot rows, duration order,\nfailed = any span with status_code 2", $component];
+estimates [label="SpanStore.estimates\nsum of root weight\nper service and name", $component];
+
+insert -> spans [label="all columns"];
+trace_spans -> spans [label="trace_id", dir=back];
+search -> spans [label="service, duration,\nstatus_code", dir=back];
+estimates -> spans [label="weight, status_code,\nstart_unix_nano", dir=back];
+}

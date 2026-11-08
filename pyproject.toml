@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "otlp-tail-sampler"
+version = "0.1.0"
+description = "Tail-sampling gateway for OTLP/HTTP JSON traces with weights, a SQLite store and an evaluation runner."
+requires-python = ">=3.13"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = ["starlette>=1.7", "uvicorn>=0.54"]
+
+[project.scripts]
+tailsampler = "tailsampler.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=9.1", "ruff>=0.16", "httpx2>=2.13", "matplotlib>=3.10", "pillow>=11", "packaging>=24"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "scripts"]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "N", "ERA"]

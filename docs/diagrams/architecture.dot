@@ -1,0 +1,49 @@
+digraph architecture {
+$defaults
+
+exporter [label="OTLP/HTTP JSON exporter\ntailsampler replay or any client", $external];
+reader [label="query and metrics clients", $external];
+
+subgraph cluster_inputs {
+    graph [$cluster];
+    label="startup inputs";
+    gateway_toml [label="configs/gateway.toml\nTAILSAMPLER_* variables", $artifact];
+    thresholds [label="results/thresholds.json\nper-route latency thresholds", $artifact];
+    config [label="config.py\nload_gateway_settings", $support];
+}
+
+subgraph cluster_gateway {
+    graph [$cluster];
+    label="gateway process: tailsampler serve";
+    cli [label="cli.py\nrun_serve", $support];
+    api [label="api.py\nStarlette routes, tick task", $component];
+    otlp [label="otlp.py\ndecode_export_request", $support];
+    sampler [label="sampler.py\nTailSampler", $component];
+    buffer [label="buffer.py\nTraceBuffer", $support];
+    policies [label="policies.py\ndecide", $support];
+    store [label="store.py\nSpanStore", $component];
+}
+
+sqlite [label="spans.sqlite3\nWAL mode", $datastore];
+
+subgraph cluster_offline {
+    graph [$cluster_top];
+    label="offline commands";
+    evaluation [label="evaluation.py\nscoring.py, benchmark.py", $support];
+}
+
+gateway_toml -> config;
+config -> cli [label="GatewaySettings"];
+thresholds -> cli [label="LatencyThresholds"];
+cli -> api [label="create_app,\nuvicorn.run"];
+exporter -> api [label="POST /v1/traces\nOTLP JSON body"];
+api -> otlp [label="request bytes"];
+api -> sampler [label="SpanRecord list in,\nKeptTrace list out", dir=both];
+sampler -> buffer [label="spans by trace id,\nin deadline order", dir=both];
+sampler -> policies [label="spans of one trace in,\nDecision out", dir=both];
+api -> store [label="KeptTrace list in,\nrows out", dir=both];
+store -> sqlite [label="INSERT OR IGNORE,\nSELECT", dir=both];
+reader -> api [label="GET /v1/traces,\n/v1/estimates, /metrics", dir=both];
+evaluation -> sampler [label="replay_in_event_time"];
+evaluation -> store [label="estimates()"];
+}

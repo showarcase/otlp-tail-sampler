@@ -1,0 +1,13 @@
+[gateway]
+host = "127.0.0.1"
+port = 4318
+database_path = "data/generated/spans.sqlite3"
+decision_wait_seconds = 10.0
+max_buffered_traces = 50000
+decision_cache_size = 200000
+baseline_rate = 0.05
+latency_thresholds_path = "results/thresholds.json"
+tick_seconds = 0.25
+log_level = "INFO"
+latency_quantile = 0.99
+min_calibration_samples = 200
